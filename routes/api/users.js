@@ -20,11 +20,15 @@ router.get("/test", (req, res) => res.json({ msg: "Users works" }));
 //@route POST api/users/register
 //@description Register user
 //@access Public
+//@route Post api/users/register
+//@description Register user
+//@access Public
+
 router.post("/register", (req, res) => {
   const { errors, isValid } = validateRegisterInput(req.body);
 
   if (!isValid) {
-    return res.status(404).json(errors);
+    return res.status(400).json(errors);
   }
 
   User.findOne({ email: req.body.email }).then(user => {
@@ -43,7 +47,6 @@ router.post("/register", (req, res) => {
         avatar,
         password: req.body.password
       });
-
       bcrypt.genSalt(10, (err, salt) => {
         bcrypt.hash(newUser.password, salt, (err, hash) => {
           if (err) throw err;
@@ -51,7 +54,7 @@ router.post("/register", (req, res) => {
           newUser
             .save()
             .then(user => res.json(user))
-            .cath(err => console.log(err));
+            .catch(err => console.log(err));
         });
       });
     }
