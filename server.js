@@ -22,6 +22,9 @@ mongoose
   .then(() => console.log("Mongodb Connect"))
   .catch(err => console.log(err));
 
+//Passport Config
+require("./config/passport")(passport);
+
 //Use Routes
 app.use("/api/users", users);
 app.use("/api/posts", posts);
