@@ -8,6 +8,7 @@ const passport = require("passport");
 
 //Load input Validation
 const validateRegisterInput = require("../../validation/register");
+const validateLoginInput = require("../../validation/login");
 
 //Load User Model
 const User = require("../../models/User");
@@ -17,9 +18,6 @@ const User = require("../../models/User");
 //@access Public
 router.get("/test", (req, res) => res.json({ msg: "Users works" }));
 
-//@route POST api/users/register
-//@description Register user
-//@access Public
 //@route Post api/users/register
 //@description Register user
 //@access Public
@@ -58,6 +56,37 @@ router.post("/register", (req, res) => {
         });
       });
     }
+  });
+});
+//@route POST api/users/login
+//@description login user / returning JWT Token
+//@access Public
+
+router.post("/login", (req, res) => {
+  const { errors, isValid } = validateLoginInput(req.body);
+
+  if (!isValid) {
+    return res.status(400).json(errors);
+  }
+
+  const email = req.body.email;
+  const password = req.body.password;
+
+  //Find user by email
+  User.findOne({ email }).then(user => {
+    if (!user) {
+      errors.email = "User not found";
+      return res.status(404).json(errors);
+    }
+
+    //check password
+    bcrypt.compare(password, user.password).then(isMatch => {
+      if (isMatch) {
+        //User password Match
+      } else {
+        //if password does not Match
+      }
+    });
   });
 });
 
